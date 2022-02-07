@@ -23,9 +23,21 @@ void Cache::Data::clean(unsigned long start, unsigned long size)
   Barrier::dsb_system();
 }
 
+void Cache::Data::flush()
+{
+  asm volatile("mcr p15, 0, %0, c7, c14, 0" : : "r" (0) : "memory");
+  Barrier::dsb_system();
+}
+
 void Cache::Data::flush(unsigned long addr)
 {
   asm volatile("mcr p15, 0, %0, c7, c14, 1" : : "r" (addr) : "memory");
+  Barrier::dsb_system();
+}
+
+void Cache::Data::inv()
+{
+  asm volatile("mcr p15, 0, %0, c7, c6, 0" : : "r" (0) : "memory");
   Barrier::dsb_system();
 }
 
@@ -42,12 +54,32 @@ bool Cache::Data::enabled()
   return r & (1UL << 2);
 }
 
+void Cache::Data::enable()
+{
+  unsigned long r;
+  Barrier::dsb_system();
+  asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
+  r |= 1UL << 2;
+  asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
+  Barrier::isb();
+}
+
 void Cache::Data::disable()
 {
   unsigned long r;
   Barrier::dsb_system();
   asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
   r &= ~(1UL << 2);
+  asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
+  Barrier::isb();
+}
+
+void Cache::Insn::enable()
+{
+  unsigned long r;
+  inv();
+  asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
+  r |= 1UL << 12;
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
   Barrier::isb();
 }

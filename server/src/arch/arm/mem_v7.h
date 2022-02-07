@@ -24,6 +24,11 @@ public:
     asm volatile("mcr p15, 0, %0, c7, c10, 2" : : "r" (v) : "memory");
   }
 
+  static inline void dc_isw(unsigned long v)
+  {
+    asm volatile("mcr p15, 0, %0, c7, c6, 2" : : "r" (v) : "memory");
+  }
+
   static inline void ic_iallu()
   {
     asm volatile("ic iallu" : : : "memory");
@@ -99,9 +104,27 @@ void Cache::Data::clean(unsigned long start, unsigned long size)
   Barrier::dsb_system();
 }
 
+void Cache::Data::inv()
+{
+  Arm_v7plus::set_way_full_loop(Arm::Internal::dc_isw,
+                                Arm::Internal::get_clidr,
+                                Arm::Internal::get_ccsidr,
+                                Arm_v7plus::set_way_dcache_noinfo_op());
+  Barrier::dsb_system();
+}
+
 void Cache::Data::inv(unsigned long addr)
 {
   asm volatile("mcr p15, 0, %0, c7, c6, 1" : : "r" (addr) : "memory"); // DCIMVAC
+  Barrier::dsb_system();
+}
+
+void Cache::Data::flush()
+{
+  Arm_v7plus::set_way_full_loop(Arm::Internal::dc_cisw,
+                                Arm::Internal::get_clidr,
+                                Arm::Internal::get_ccsidr,
+                                Arm_v7plus::set_way_dcache_noinfo_op());
   Barrier::dsb_system();
 }
 
@@ -116,10 +139,24 @@ bool Cache::Data::enabled()
   return Arm::Internal::sctlr() & (1UL << 2);
 }
 
+void Cache::Data::enable()
+{
+  Barrier::dsb_system();
+  Arm::Internal::sctlr(Arm::Internal::sctlr() | (1UL << 2));
+  Barrier::isb();
+}
+
 void Cache::Data::disable()
 {
   Barrier::dsb_system();
   Arm::Internal::sctlr(Arm::Internal::sctlr() & ~(1UL << 2));
+  Barrier::isb();
+}
+
+void Cache::Insn::enable()
+{
+  inv();
+  Arm::Internal::sctlr(Arm::Internal::sctlr() | (1UL << 12));
   Barrier::isb();
 }
 
