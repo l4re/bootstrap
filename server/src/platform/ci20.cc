@@ -70,9 +70,9 @@ public:
 
   void setup_memory_map() override
   {
-    mem_manager->ram->add(Region(0x0,        0x0fffffff, ".ram", Region::Ram));
+    mem_manager->ram->add(Region(0x0,        0x0fffffff, ".ram"));
     // Note, the first 256MB are mirrored at 0x20000000
-    mem_manager->ram->add(Region(0x30000000, 0x5fffffff, ".ram", Region::Ram));
+    mem_manager->ram->add(Region(0x30000000, 0x5fffffff, ".ram"));
   }
 
   void reboot() override

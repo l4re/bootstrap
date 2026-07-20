@@ -104,34 +104,30 @@ class Platform_s32k5 final : public Platform_arm, public Boot_modules_image_mode
   void setup_memory_map() override
   {
     // Main Platform SRAM, all banks
-    mem_manager->ram->add(Region(Main_sram_base, Main_sram_end,
-                                 ".SRAM", Region::Ram));
+    mem_manager->ram->add(Region(Main_sram_base, Main_sram_end, ".SRAM"));
 
     // CPE SRAM, all banks
-    mem_manager->ram->add(Region(Cpe_sram_base, Cpe_sram_end,
-                                 ".CPE_SRAM", Region::Ram));
+    mem_manager->ram->add(Region(Cpe_sram_base, Cpe_sram_end, ".CPE_SRAM"));
 
     // Code MRAM, all banks
-    mem_manager->ram->add(Region(Code_mram_base, Code_mram_end,
-                                 ".CMRAM", Region::Ram));
+    mem_manager->ram->add(Region(Code_mram_base, Code_mram_end, ".CMRAM"));
 
     // Data MRAM, all banks
-    mem_manager->ram->add(Region(Data_mram_base, Data_mram_end,
-                                 ".DMRAM", Region::Ram));
+    mem_manager->ram->add(Region(Data_mram_base, Data_mram_end, ".DMRAM"));
 
     // CPE Cortex-R52 TCMs
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c0_base,
-                                             32 << 10, ".ATCM0", Region::Ram));
+                                             32 << 10, ".ATCM0"));
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c0_base | 0x00100000,
-                                             32 << 10, ".BTCM0", Region::Ram));
+                                             32 << 10, ".BTCM0"));
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c0_base | 0x00200000,
-                                             32 << 10, ".CTCM0", Region::Ram));
+                                             32 << 10, ".CTCM0"));
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c1_base,
-                                             32 << 10, ".ATCM1", Region::Ram));
+                                             32 << 10, ".ATCM1"));
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c1_base | 0x00100000,
-                                             32 << 10, ".BTCM1", Region::Ram));
+                                             32 << 10, ".BTCM1"));
     mem_manager->ram->add(Region::start_size(Cpe_tcm_c1_base | 0x00200000,
-                                             32 << 10, ".CTCM1", Region::Ram));
+                                             32 << 10, ".CTCM1"));
   }
 };
 }

@@ -205,7 +205,7 @@ void Dt::setup_memory() const
       mem.for_each_reg([](l4_uint64_t start, l4_uint64_t sz)
         {
           // Ignore multiple similar given regions
-          Region n = Region::start_size(start, sz, ".ram", Region::Ram);
+          Region n = Region::start_size(start, sz, ".ram");
           bool duplicate = false;
           for (auto const &i : *mem_manager->ram)
             if (i.overlaps(n) && i.type() == n.type())

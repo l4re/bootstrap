@@ -156,61 +156,61 @@ class Platform_s32n final : public Platform_arm, public Boot_modules_image_mode
   void setup_memory_map() override
   {
     mem_manager->ram->add(Region::start_size(0x24800000U, 256 << 10,
-                                             ".AON_RAM", Region::Ram));
+                                             ".AON_RAM"));
 
 #if defined(PLATFORM_TYPE_s32n5)
     mem_manager->ram->add(Region::start_size(0x25c00000U, 3072 << 10,
-                                             ".CRS_SRAM", Region::Ram));
+                                             ".CRS_SRAM"));
 #endif
 
     // RTU CRAM all banks
     mem_manager->ram->add(Region(Rtu_cram_base, Rtu_cram_end,
-                                 ".CRAM", Region::Ram));
+                                 ".CRAM"));
 
     // RTU DRAM all banks
     mem_manager->ram->add(Region::start_size(Rtu_dram_base, 1536 << 10,
-                                             ".DRAM", Region::Ram));
+                                             ".DRAM"));
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL0_LOCKSTEP) \
     || defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL0_SPLIT)
     // RTU/cluster0/core0 TCMs
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c0_base,
-                                             64 << 10, ".ATCM00", Region::Ram));
+                                             64 << 10, ".ATCM00"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c0_base | 0x00100000,
-                                             16 << 10, ".BTCM00", Region::Ram));
+                                             16 << 10, ".BTCM00"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c0_base | 0x00200000,
-                                             16 << 10, ".CTCM00", Region::Ram));
+                                             16 << 10, ".CTCM00"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL0_SPLIT)
     // RTU/cluster0/core1 TCMs
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c1_base,
-                                             64 << 10, ".ATCM01", Region::Ram));
+                                             64 << 10, ".ATCM01"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c1_base | 0x00100000,
-                                             16 << 10, ".BTCM01", Region::Ram));
+                                             16 << 10, ".BTCM01"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c1_base | 0x00200000,
-                                             16 << 10, ".CTCM01", Region::Ram));
+                                             16 << 10, ".CTCM01"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL1_LOCKSTEP) \
     || defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL1_SPLIT)
     // RTU/cluster1/core0 TCMs
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c2_base,
-                                             64 << 10, ".ATCM10", Region::Ram));
+                                             64 << 10, ".ATCM10"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c2_base | 0x00100000,
-                                             16 << 10, ".BTCM10", Region::Ram));
+                                             16 << 10, ".BTCM10"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c2_base | 0x00200000,
-                                             16 << 10, ".CTCM10", Region::Ram));
+                                             16 << 10, ".CTCM10"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32N_RTU_CL1_SPLIT)
     // RTU/cluster1/core1 TCMs
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c3_base,
-                                             64 << 10, ".ATCM11", Region::Ram));
+                                             64 << 10, ".ATCM11"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c3_base | 0x00100000,
-                                             16 << 10, ".BTCM11", Region::Ram));
+                                             16 << 10, ".BTCM11"));
     mem_manager->ram->add(Region::start_size(Rtu_tcm_c3_base | 0x00200000,
-                                             16 << 10, ".CTCM11", Region::Ram));
+                                             16 << 10, ".CTCM11"));
 #endif
   }
 };

@@ -203,7 +203,8 @@ Efi::setup_memory()
         case EfiConventionalMemory:
           // Must allow overlaps of RAM regions. This has been observed on
           // Ampere Altra...
-          ram->add(new_region(m, ".ram", Region::Ram), true);
+          // Region::No_mem is a dummy -- not relevant for RAM region list.
+          ram->add(new_region(m, ".ram", Region::No_mem), true);
           break;
         case EfiACPIReclaimMemory: // memory holds ACPI tables
           regions->add(new_region(m, ".ACPI", Region::Arch, Region::Arch_acpi));

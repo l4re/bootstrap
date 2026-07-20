@@ -40,8 +40,7 @@ class Platform_arm_rcar4 : public Platform_arm, public Boot_modules_image_mode
   void setup_memory_map() override
   {
     // There is also the Secure FW in RT-SRAM!
-    mem_manager->ram->add(Region(0xeb200000U, 0xeb37ffffU,
-                                 ".ram", Region::Ram));
+    mem_manager->ram->add(Region(0xeb200000U, 0xeb37ffffU, ".ram"));
   }
 };
 

@@ -65,7 +65,7 @@ init_kip_md(l4_kernel_info_t *l4i, Region_list *ram, Region_list *regions)
       switch (r.type())
         {
         case Region::No_mem:
-        case Region::Ram:
+        case Region::Ram_dont_use:
         case Region::Boot:
           continue;
         case Region::Kernel:

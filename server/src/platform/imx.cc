@@ -172,10 +172,10 @@ class Platform_arm_imx
 #if defined(PLATFORM_TYPE_imx8x)
   void setup_memory_map()
   {
-    mem_manager->ram->add(Region(0x080200000, 0x083ffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x088000000, 0x08fffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x095c00000, 0x0ffffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x880000000, 0x8bfffffff, ".ram", Region::Ram));
+    mem_manager->ram->add(Region(0x080200000, 0x083ffffff, ".ram"));
+    mem_manager->ram->add(Region(0x088000000, 0x08fffffff, ".ram"));
+    mem_manager->ram->add(Region(0x095c00000, 0x0ffffffff, ".ram"));
+    mem_manager->ram->add(Region(0x880000000, 0x8bfffffff, ".ram"));
   }
 
   Boot_modules *modules() { return this; }
@@ -305,10 +305,10 @@ class Platform_arm_imx
           }
       }
 
-    mem_manager->ram->add(Region(0x080200000, 0x083ffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x088000000, 0x08fffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x095c00000, 0x0ffffffff, ".ram", Region::Ram));
-    mem_manager->ram->add(Region(0x880000000, end, ".ram", Region::Ram));
+    mem_manager->ram->add(Region(0x080200000, 0x083ffffff, ".ram"));
+    mem_manager->ram->add(Region(0x088000000, 0x08fffffff, ".ram"));
+    mem_manager->ram->add(Region(0x095c00000, 0x0ffffffff, ".ram"));
+    mem_manager->ram->add(Region(0x880000000, end, ".ram"));
   }
 
   Boot_modules *modules() { return this; }

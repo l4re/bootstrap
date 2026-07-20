@@ -76,8 +76,7 @@ public:
 
     unsigned long b = ram > 128 ? 128 : ram;
     printf("  Memory 0: 00000000 - %08lx (%lu MiB)\n", (b << 20) - 1, b);
-    mem_manager->ram->add(Region::start_size(0UL, b << 20, ".ram",
-                                             Region::Ram));
+    mem_manager->ram->add(Region::start_size(0UL, b << 20, ".ram"));
     if (b >= ram)
       return;
 
@@ -90,8 +89,7 @@ public:
     printf("  Memory 1: 20000000 - %08lx (%lu MiB)\n",
            0x20000000 + (ram << 20) - 1, ram);
 
-    mem_manager->ram->add(Region::start_size(0x20000000, ram << 20, ".ram",
-                                             Region::Ram));
+    mem_manager->ram->add(Region::start_size(0x20000000, ram << 20, ".ram"));
 
     printf("  Memory total size is %lu MiB\n", ram + b);
   }

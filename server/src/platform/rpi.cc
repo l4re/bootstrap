@@ -358,19 +358,19 @@ class Platform_arm_rpi_mbox : public Platform_arm,
       printf("Failed to query VC for board info\n");
 
     mem_manager->ram->add(Region(armmem.base(), armmem.base() + armmem.size() - 1,
-                                 ".ram", Region::Ram));
+                                 ".ram"));
 
     // Only available in DT otherwise
     unsigned long second_start = (br.revision() == 4) ? 0x4c000000 : 0x40200000;
     if (br.memory_size_mb() == 8192)
       {
-        mem_manager->ram->add(Region(second_start, 0x0fbffffff, ".ram", Region::Ram));
-        mem_manager->ram->add(Region(0x100000000, 0x1ffffffff, ".ram", Region::Ram));
+        mem_manager->ram->add(Region(second_start, 0x0fbffffff, ".ram"));
+        mem_manager->ram->add(Region(0x100000000, 0x1ffffffff, ".ram"));
       }
     if (br.memory_size_mb() == 4096)
-      mem_manager->ram->add(Region(second_start, 0xfbffffff, ".ram", Region::Ram));
+      mem_manager->ram->add(Region(second_start, 0xfbffffff, ".ram"));
     if (br.memory_size_mb() == 2048)
-      mem_manager->ram->add(Region(second_start, 0x7fffffff, ".ram", Region::Ram));
+      mem_manager->ram->add(Region(second_start, 0x7fffffff, ".ram"));
 
     mem_manager->regions->add(Region::start_size(0UL, 0x1000, ".mpspin",
                                                  Region::Arch));

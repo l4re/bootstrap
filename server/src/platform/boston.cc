@@ -66,12 +66,11 @@ public:
 
     printf("Boston board with %u GiB of RAM.\n", ramsize_gb);
 
-    mem_manager->ram->add(Region::start_size(0UL, 0x10000000, ".ram",
-                                             Region::Ram));
+    mem_manager->ram->add(Region::start_size(0UL, 0x10000000, ".ram"));
 
     mem_manager->ram->add(Region::start_size(0x90000000,
                                              (ramsize_gb << 30) - 0x10000000,
-                                             ".ram", Region::Ram));
+                                             ".ram"));
   }
 };
 

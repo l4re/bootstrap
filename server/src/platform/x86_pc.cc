@@ -77,10 +77,8 @@ struct Platform_x86_1 : Platform_x86
    if (!(mbi->flags & L4UTIL_MB_MEM_MAP))
       {
         assert(mbi->flags & L4UTIL_MB_MEMORY);
-        ram->add(Region::start_size(0UL, mbi->mem_lower << 10, ".ram",
-                                    Region::Ram));
-        ram->add(Region::start_size(1UL << 20, mbi->mem_upper << 10, ".ram",
-                                    Region::Ram));
+        ram->add(Region::start_size(0UL, mbi->mem_lower << 10, ".ram"));
+        ram->add(Region::start_size(1UL << 20, mbi->mem_upper << 10, ".ram"));
 
         // Fix EBDA in conventional memory
         unsigned long p = *(l4_uint16_t const *)ebda_segment << 4;
@@ -92,7 +90,7 @@ struct Platform_x86_1 : Platform_x86
             if (r)
               {
                 if (e - 1 < r->end())
-                  ram->add(Region(e, r->end(), ".ram", Region::Ram), true);
+                  ram->add(Region(e, r->end(), ".ram"), true);
                 r->end(p);
               }
           }
@@ -116,8 +114,7 @@ struct Platform_x86_1 : Platform_x86
             switch (mmap->type)
               {
               case MB_ART_MEMORY:
-                ram->add(Region::start_size(mmap->addr, mmap->size, ".ram",
-                                            Region::Ram));
+                ram->add(Region::start_size(mmap->addr, mmap->size, ".ram"));
                 break;
               case MB_ART_RESERVED:
               case MB_ART_ACPI:

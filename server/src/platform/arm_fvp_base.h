@@ -61,14 +61,10 @@ struct Platform_arm_fvp_base_common : public Platform_arm,
     if (sizeof(unsigned long) == 4 && size_mb > 2048)
       size_mb = 2048;
 
-    mem_manager->ram->add(
-      Region::start_size(Ram_base_low,
-                         ((size_mb < 2048 ? size_mb : 2048) << 20),
-                         ".ram", Region::Ram));
+    mem_manager->ram->add(Ram_base_low, cxx::max(size_mb, 2048) << 20, ".ram");
     if (size_mb > 2048)
       mem_manager->ram->add(Region::start_size(Ram_base_high,
-                                               ((size_mb - 2048) << 20),
-                                               ".ram", Region::Ram));
+                                               ((size_mb - 2048) << 20), ".ram"));
   }
 };
 

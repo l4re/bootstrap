@@ -120,91 +120,62 @@ class Platform_s32z final : public Platform_arm, public Boot_modules_image_mode
 
   void setup_memory_map() override
   {
-    mem_manager->ram->add(Region(0x25000000U, 0x250fffffU,
-                                 ".SMU", Region::Ram));
+    mem_manager->ram->add(Region(0x25000000U, 0x250fffffU, ".SMU"));
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU0_LOCKSTEP) \
     || defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU0_SPLIT)
     // RTU0 [CD]RAM
-    mem_manager->ram->add(Region(Rtu0_cram_begin, Rtu0_cram_end,
-                                 ".CRAM0", Region::Ram));
-    mem_manager->ram->add(Region(0x31780000U, 0x3187ffffU,
-                                 ".DRAM0", Region::Ram));
+    mem_manager->ram->add(Region(Rtu0_cram_begin, Rtu0_cram_end, ".CRAM0"));
+    mem_manager->ram->add(Region(0x31780000U, 0x3187ffffU, ".DRAM0"));
 
     // RTU0 core 0 TCMs
-    mem_manager->ram->add(Region(0x30000000U, 0x3000ffffU,
-                                 ".ATCM00", Region::Ram));
-    mem_manager->ram->add(Region(0x30100000U, 0x30103fffU,
-                                 ".BTCM00", Region::Ram));
-    mem_manager->ram->add(Region(0x30200000U, 0x30203fffU,
-                                 ".CTCM00", Region::Ram));
+    mem_manager->ram->add(Region(0x30000000U, 0x3000ffffU, ".ATCM00"));
+    mem_manager->ram->add(Region(0x30100000U, 0x30103fffU, ".BTCM00"));
+    mem_manager->ram->add(Region(0x30200000U, 0x30203fffU, ".CTCM00"));
 
     // RTU0 core 1 TCMs
-    mem_manager->ram->add(Region(0x30400000U, 0x3040ffffU,
-                                 ".ATCM01", Region::Ram));
-    mem_manager->ram->add(Region(0x30500000U, 0x30503fffU,
-                                 ".BTCM01", Region::Ram));
-    mem_manager->ram->add(Region(0x30600000U, 0x30603fffU,
-                                 ".CTCM01", Region::Ram));
+    mem_manager->ram->add(Region(0x30400000U, 0x3040ffffU, ".ATCM01"));
+    mem_manager->ram->add(Region(0x30500000U, 0x30503fffU, ".BTCM01"));
+    mem_manager->ram->add(Region(0x30600000U, 0x30603fffU, ".CTCM01"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU0_SPLIT)
     // Add core 2+3 TCMs if RTU0 is running in split-lock config
-    mem_manager->ram->add(Region(0x30800000U, 0x3080ffffU,
-                                 ".ATCM02", Region::Ram));
-    mem_manager->ram->add(Region(0x30900000U, 0x30903fffU,
-                                 ".BTCM02", Region::Ram));
-    mem_manager->ram->add(Region(0x30a00000U, 0x30a03fffU,
-                                 ".CTCM02", Region::Ram));
+    mem_manager->ram->add(Region(0x30800000U, 0x3080ffffU, ".ATCM02"));
+    mem_manager->ram->add(Region(0x30900000U, 0x30903fffU, ".BTCM02"));
+    mem_manager->ram->add(Region(0x30a00000U, 0x30a03fffU, ".CTCM02"));
 
-    mem_manager->ram->add(Region(0x30c00000U, 0x30c0ffffU,
-                                 ".ATCM03", Region::Ram));
-    mem_manager->ram->add(Region(0x30d00000U, 0x30d03fffU,
-                                 ".BTCM03", Region::Ram));
-    mem_manager->ram->add(Region(0x30e00000U, 0x30e03fffU,
-                                 ".CTCM03", Region::Ram));
+    mem_manager->ram->add(Region(0x30c00000U, 0x30c0ffffU, ".ATCM03"));
+    mem_manager->ram->add(Region(0x30d00000U, 0x30d03fffU, ".BTCM03"));
+    mem_manager->ram->add(Region(0x30e00000U, 0x30e03fffU, ".CTCM03"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU1_LOCKSTEP) \
     || defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU1_SPLIT)
     // RTU1 [CD]RAM
-    mem_manager->ram->add(Region(Rtu1_cram_begin, Rtu1_cram_end,
-                                 ".CRAM1", Region::Ram));
-    mem_manager->ram->add(Region(0x35780000U, 0x3587ffffU,
-                                 ".DRAM1", Region::Ram));
+    mem_manager->ram->add(Region(Rtu1_cram_begin, Rtu1_cram_end, ".CRAM1"));
+    mem_manager->ram->add(Region(0x35780000U, 0x3587ffffU, ".DRAM1"));
 
     // RTU1 core 0 TCMs
-    mem_manager->ram->add(Region(0x34000000U, 0x3400ffffU,
-                                 ".ATCM10", Region::Ram));
-    mem_manager->ram->add(Region(0x34100000U, 0x34103fffU,
-                                 ".BTCM10", Region::Ram));
-    mem_manager->ram->add(Region(0x34200000U, 0x34203fffU,
-                                 ".CTCM10", Region::Ram));
+    mem_manager->ram->add(Region(0x34000000U, 0x3400ffffU, ".ATCM10"));
+    mem_manager->ram->add(Region(0x34100000U, 0x34103fffU, ".BTCM10"));
+    mem_manager->ram->add(Region(0x34200000U, 0x34203fffU, ".CTCM10"));
 
     // RTU1 core 1 TCMs
-    mem_manager->ram->add(Region(0x34400000U, 0x3440ffffU,
-                                 ".ATCM11", Region::Ram));
-    mem_manager->ram->add(Region(0x34500000U, 0x34503fffU,
-                                 ".BTCM11", Region::Ram));
-    mem_manager->ram->add(Region(0x34600000U, 0x34603fffU,
-                                 ".CTCM11", Region::Ram));
+    mem_manager->ram->add(Region(0x34400000U, 0x3440ffffU, ".ATCM11"));
+    mem_manager->ram->add(Region(0x34500000U, 0x34503fffU, ".BTCM11"));
+    mem_manager->ram->add(Region(0x34600000U, 0x34603fffU, ".CTCM11"));
 #endif
 
 #if defined(CONFIG_BOOTSTRAP_PF_S32Z_RTU1_SPLIT)
     // Add core 2+3 TCMs if RTU1 is running in split-lock config
-    mem_manager->ram->add(Region(0x34800000U, 0x3480ffffU,
-                                 ".ATCM12", Region::Ram));
-    mem_manager->ram->add(Region(0x34900000U, 0x34903fffU,
-                                 ".BTCM12", Region::Ram));
-    mem_manager->ram->add(Region(0x34a00000U, 0x34a03fffU,
-                                 ".CTCM12", Region::Ram));
+    mem_manager->ram->add(Region(0x34800000U, 0x3480ffffU, ".ATCM12"));
+    mem_manager->ram->add(Region(0x34900000U, 0x34903fffU, ".BTCM12"));
+    mem_manager->ram->add(Region(0x34a00000U, 0x34a03fffU, ".CTCM12"));
 
-    mem_manager->ram->add(Region(0x34c00000U, 0x34c0ffffU,
-                                 ".ATCM13", Region::Ram));
-    mem_manager->ram->add(Region(0x34d00000U, 0x34d03fffU,
-                                 ".BTCM13", Region::Ram));
-    mem_manager->ram->add(Region(0x34e00000U, 0x34e03fffU,
-                                 ".CTCM13", Region::Ram));
+    mem_manager->ram->add(Region(0x34c00000U, 0x34c0ffffU, ".ATCM13"));
+    mem_manager->ram->add(Region(0x34d00000U, 0x34d03fffU, ".BTCM13"));
+    mem_manager->ram->add(Region(0x34e00000U, 0x34e03fffU, ".CTCM13"));
 #endif
   }
 };

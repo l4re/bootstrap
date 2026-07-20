@@ -398,7 +398,7 @@ setup_memory_map(char const *cmdline)
         panic("Invalid '-mem=%s' parameter", s);
 
       parsed_mem_option = true;
-      ram.add(Region::start_size(offset, sz, ".ram", Region::Ram));
+      ram.add(Region::start_size(offset, sz, ".ram"));
     }
 
   if (!parsed_mem_option)

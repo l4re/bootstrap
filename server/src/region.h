@@ -30,7 +30,9 @@ public:
     Boot,   // Not added to KIP memory descriptors!
     Root,   // => L4::Kip::Mem_desc::Mem_type::Bootloader
     Arch,   // => L4::Kip::Mem_desc::Mem_type::Arch
-    Ram,    // => L4::Kip::Mem_desc::Mem_type::Conventional
+    Ram_dont_use,
+            // => L4::Kip::Mem_desc::Mem_type::Conventional.
+            // Regions of this type are part of the separate 'ram' region list.
     Info    // => L4::Kip::Mem_desc::Mem_type::Info
   };
 

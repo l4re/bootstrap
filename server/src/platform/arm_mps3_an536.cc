@@ -73,7 +73,7 @@ class Platform_arm_mps3_an536 : public Platform_arm,
   void setup_memory_map() override
   {
     mem_manager->ram->add(
-      Region::start_size(Ram_base, Ram_size, ".ram", Region::Ram));
+      Region::start_size(Ram_base, Ram_size, ".ram"));
   }
 };
 

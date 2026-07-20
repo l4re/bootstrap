@@ -129,25 +129,17 @@ class Platform_sr6p7g7 : public Platform_arm, public Boot_modules_image_mode
 
   void setup_memory_map()
   {
-    mem_manager->ram->add(Region::start_size(0x60000000U, 512 << 10,
-                                             ".RAM00", Region::Ram));
-    mem_manager->ram->add(Region::start_size(0x60400000U, 512 << 10,
-                                             ".RAM01", Region::Ram));
+    mem_manager->ram->add(Region::start_size(0x60000000U, 512 << 10, ".RAM00"));
+    mem_manager->ram->add(Region::start_size(0x60400000U, 512 << 10, ".RAM01"));
 
-    mem_manager->ram->add(Region::start_size(0x60800000U, 384 << 10,
-                                             ".RAM10", Region::Ram));
-    mem_manager->ram->add(Region::start_size(0x60c00000U, 384 << 10,
-                                             ".RAM11", Region::Ram));
+    mem_manager->ram->add(Region::start_size(0x60800000U, 384 << 10, ".RAM10"));
+    mem_manager->ram->add(Region::start_size(0x60c00000U, 384 << 10, ".RAM11"));
 
-    mem_manager->ram->add(Region::start_size(0x61000000U, 256 << 10,
-                                             ".RAM20", Region::Ram));
-    mem_manager->ram->add(Region::start_size(0x61400000U, 256 << 10,
-                                             ".RAM21", Region::Ram));
+    mem_manager->ram->add(Region::start_size(0x61000000U, 256 << 10, ".RAM20"));
+    mem_manager->ram->add(Region::start_size(0x61400000U, 256 << 10, ".RAM21"));
 
-    mem_manager->ram->add(Region::start_size(0x64000000U, 256 << 10,
-                                             ".SYSRAM0", Region::Ram));
-    mem_manager->ram->add(Region::start_size(0x64400000U, 256 << 10,
-                                             ".SYSRAM1", Region::Ram));
+    mem_manager->ram->add(Region::start_size(0x64000000U, 256 << 10, ".SYSRAM0"));
+    mem_manager->ram->add(Region::start_size(0x64400000U, 256 << 10, ".SYSRAM1"));
   }
 };
 
