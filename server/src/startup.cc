@@ -744,6 +744,117 @@ search_and_setup_utest_feature(char const *cmdline, l4_kernel_info_t *info)
       }
 }
 
+/**
+ * Add Kmem regions for a single region covered by RAM to the 'regions' list.
+ *
+ * In case of overlaps with existing regions, multiple regions are added.
+ *
+ * \param r_add  The Kmem region to be added.
+ *
+ * \retval true   A Kmem region was added, or multiple Kmem regions were added
+ *                due due to overlaps with existing regions.
+ * \retval false  No Kmem region was added due to conflict with existing
+ *                regions.
+ */
+static bool
+add_kmem_area_on_ram(Region r_add)
+{
+  bool added = false;
+
+  Region const *r_reg = regions.begin();
+  while (r_reg != regions.end())
+    {
+      if (r_add.overlaps(*r_reg))
+        {
+          unsigned long reg_end = r_reg->end();
+          // add Kmem region immediately _before_ the overlapping region
+          if (r_add.begin() < r_reg->begin())
+            {
+              regions.add(Region(r_add.begin(), r_reg->begin() - 1,
+                                 ".kmemarea", Region::Kmem));
+              // Note: As of here, *r_reg has changed!
+              added = true;
+              // regions list was modified -- need to iterate from beginning
+              r_reg = regions.begin();
+              continue;
+            }
+
+          if (r_add.end() <= reg_end)
+            // nothing remains immediately _after_ the overlapping region
+            return added;
+
+          r_add.begin(reg_end + 1);
+        }
+
+      ++r_reg;
+    }
+
+  // add remaining Kmem region
+  regions.add(Region(r_add.begin(), r_add.end(), ".kmemarea", Region::Kmem));
+  return true;
+}
+
+/**
+ * For each '-kmemarea=' parameter, create one or multiple 'Kmem' regions that
+ * overlap with any region from the list of 'ram' regions, but not with any
+ * existing region in the 'regions' list.
+ *
+ * \param cmdline  Command line.
+ *
+ * \retval false  No kmem areas added.
+ * \retval true   Kmem areas added.
+ *
+ * \note As this function is executed before finalize_regions(), 'Boot' regions
+ *       are still part of the region list and hence are skipped.
+ */
+static bool
+setup_kmem_areas(char const *cmdline)
+{
+  const char *s = cmdline;
+
+  bool added = false;
+  for (int arg_len = 0; (s = check_arg(s, "-kmemarea=", &arg_len));)
+    {
+      unsigned long sz, offset = 0;
+      if (!parse_mem_layout(s, &sz, &offset))
+        panic("Invalid '-kmemarea=%.*s' parameter", arg_len, s);
+
+      Region r_kmem = Region::start_size(offset, sz);
+
+      bool this_reg_in_ram = false;
+      bool this_reg_added = false;
+      for (Region const &r_ram : ram)
+        if (r_kmem.overlaps(r_ram))
+          {
+            this_reg_in_ram = true;
+            this_reg_added |= add_kmem_area_on_ram(r_kmem.intersect(r_ram));
+          }
+
+      if (!this_reg_in_ram)
+        printf("Region for '-kmemarea=%.*s' not part of RAM -- skipping\n",
+               arg_len, s);
+      else if (!this_reg_added)
+        printf("Region for '-kmemarea=%.*s' conflicts with existing regions -- skipping\n",
+               arg_len, s);
+      else
+        added = true;
+    }
+
+  if (added)
+    {
+      unsigned long sum_kmem = 0;
+      for (Region const &r : regions)
+        if (r.type() == Region::Kmem)
+          sum_kmem += r.size();
+
+      char s_kmem[64];
+      l4util_human_readable_size(s_kmem, sizeof(s_kmem), sum_kmem);
+      printf("  RAM regions reserved for kernel memory: %s\n", s_kmem);
+    }
+
+  return added;
+}
+
 static unsigned long
 load_elf_module(Boot_modules::Module const &mod, char const *n, l4_addr_t offset)
 {
@@ -916,6 +1027,8 @@ startup(char const *cmdline)
   if (!kip)
     panic("No KIP found!");
 
+  bool have_kmem_areas = setup_kmem_areas(kernel_cmdline);
+
   /* setup kernel PART TWO (sigma0 and root task initialization) */
   for (unsigned i = 0; i < num_nodes; i++)
     {
@@ -961,6 +1074,8 @@ startup(char const *cmdline)
       lko->flags |= kuart_flags;
 
       search_and_setup_utest_feature(kernel_cmdline, l4i);
+      if (have_kmem_areas)
+        lko->flags |= L4_kernel_options::F_kmem_descs;
 
       init_kip_infos(l4i, &boot_info, mbi);
       plat->setup_kernel_options(lko);

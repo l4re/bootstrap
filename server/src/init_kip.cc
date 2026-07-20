@@ -68,6 +68,9 @@ init_kip_md(l4_kernel_info_t *l4i, Region_list *ram, Region_list *regions)
         case Region::Ram_dont_use:
         case Region::Boot:
           continue;
+        case Region::Kmem:
+          type = Mem_desc::Kmem;
+          break;
         case Region::Kernel:
           type = Mem_desc::Reserved;
           break;

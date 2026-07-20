@@ -33,7 +33,8 @@ public:
     Ram_dont_use,
             // => L4::Kip::Mem_desc::Mem_type::Conventional.
             // Regions of this type are part of the separate 'ram' region list.
-    Info    // => L4::Kip::Mem_desc::Mem_type::Info
+    Info,   // => L4::Kip::Mem_desc::Mem_type::Info
+    Kmem    // => L4::Kip::Mem_desc::Mem_type::Kmem
   };
 
   // Must be compatible with L4::Kip::Mem_desc subtype.

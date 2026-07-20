@@ -214,7 +214,7 @@ void
 Region::vprint(bool aligned) const
 {
   static char const *types[] = {"", "Kern", "Sigma0", "Boot", "Root",
-                                "Arch", "Ram", "Info" };
+                                "Arch", "Ram", "Info", "Kmem" };
   printf("  ");
   print(aligned);
   printf(" %*s ", aligned ? -6 : 0, types[type()]);

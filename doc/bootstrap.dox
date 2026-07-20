@@ -222,6 +222,17 @@
  *
  *     Reserve `<KB>` KiB of memory for the kernel.
  *
+ *   * `-kmemarea=<size>@<offset>`
+ *
+ *     Reserve a region of memory of `<size>` at `<offset>` to be used as kernel
+ *     memory. Both `<size>` and `<offset>` may be suffixed by either `G`, `M`,
+ *     or `K` to denote GiB, MiB, or KiB, respectively. The kernel allocates
+ *     memory for internal use from this pool. The amount of kernel memory is
+ *     either defined by `-kmemsize=` or by the kernel itself.
+ *
+ *     This option may be specified multiple times. If the option is not given,
+ *     there are no address constraints for kernel memory.
+ *
  *   * `-tbuf_entries=<number>`
  *
  *     Specify the `<number>` of trace buffer entries.
