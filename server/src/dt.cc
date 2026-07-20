@@ -259,15 +259,32 @@ void Dt::setup_memory() const
             Region::start_size(addr, size, "memreserve", Region::Arch));
         }
     }
+}
+
+void Dt::after_setup_memory_map()
+{
+  if (!_fdt)
+    return;
+
+  unsigned long size = fdt_totalsize(_fdt);
+  Region fdt_region = Region::start_size(_fdt, size, ".dtb", Region::Root);
+
+  if (!mem_manager->sysalloc->contains(fdt_region))
+    {
+      l4_addr_t addr = mem_manager->find_free_ram(size);
+      if (!addr)
+        panic("Not enough free memory for .dtb copy");
+
+      void *new_dt = reinterpret_cast<void *>(addr);
+      fdt_move(_fdt, new_dt, size);
+      _fdt = new_dt;
+
+      fdt_region = Region::start_size(_fdt, size, ".dtb", Region::Root);
+    }
 
   // Add device tree to memory map, unless already done by u-boot (e.g. RCar3).
-  Region r_fdt_new
-    = Region::start_size(_fdt, fdt_totalsize(_fdt), ".dtb", Region::Root);
-  if (Region *r_fdt_found = mem_manager->regions->find(r_fdt_new))
-    warn("No .dtb region: bootloader has already reserved DT region %lx-%lx!\n",
-         r_fdt_found->begin(), r_fdt_found->end());
-  else
-    mem_manager->regions->add(r_fdt_new);
+  if (!mem_manager->regions->find(fdt_region))
+    mem_manager->regions->add(fdt_region);
 }
 
 l4_uint64_t Dt::cpu_release_addr() const

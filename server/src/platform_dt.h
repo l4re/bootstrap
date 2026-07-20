@@ -43,6 +43,11 @@ public:
     dt.setup_memory();
   }
 
+  void after_setup_memory_map() override
+  {
+    dt.after_setup_memory_map();
+  }
+
   void init_dt() override
   {
     dt.init(get_fdt_addr());

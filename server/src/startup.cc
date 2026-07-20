@@ -830,6 +830,7 @@ startup(char const *cmdline)
   plat->init_regions();
 
   setup_sysalloc_map(cmdline);
+  Platform_base::platform->after_setup_memory_map();
   dump_ram_map(true);
 
   if (const char *s = check_arg(cmdline, "-modaddr"))

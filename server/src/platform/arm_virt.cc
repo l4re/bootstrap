@@ -74,6 +74,11 @@ class Platform_arm_virt : public Platform_dt_arm
     return mbi;
   }
 
+  void after_setup_memory_map() override
+  {
+    dt.after_setup_memory_map();
+  }
+
   void late_setup(l4_kernel_info_t *kip) override
   {
     bool have_smmuv3 = dt.node_by_compatible("arm,smmu-v3").is_valid();

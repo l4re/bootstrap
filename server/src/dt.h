@@ -556,6 +556,7 @@ public:
   }
 
   void setup_memory() const;
+  void after_setup_memory_map();
   l4_uint64_t cpu_release_addr() const;
 
   /**
