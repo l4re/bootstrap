@@ -91,6 +91,17 @@
  *     a platform-specific method for determining the memory layout will be
  *     used, if available.
  *
+ *   * `-sysalloc=<size>@<offset>`
+ *
+ *     Designate a region of memory of `<size>` at `<offset>` for loading the
+ *     modules. Both `<size>` and `<offset>` may be suffixed by either
+ *     `G`, `M`, or `K` to denote GiB, MiB, or KiB, respectively.
+ *
+ *     This option may be specified multiple times. If the option is not given,
+ *     all system memory regions are used. If this option is given at least once
+ *     and there are no intersections with any system memory region, `bootstrap`
+ *     panics.
+ *
  *   * `-presetmem=<intval>`
  *
  *     Initialise memory regions with `<intval>` before starting the kernel.

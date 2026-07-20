@@ -322,6 +322,9 @@ public:
   /** Search for a region that overlaps o. */
   Region *find(Region const &o) const;
 
+  /** Reverse-search a region that overlaps o. */
+  Region *find_rev(Region const &o) const;
+
   /** Search for the region that contains o. */
   Region *contains(Region const &o) const;
 

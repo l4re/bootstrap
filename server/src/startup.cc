@@ -58,7 +58,11 @@ static Region __regs[300];
 static Region_list ram;
 static Region __ram[32];
 
-static Memory _mem_manager = { &ram, &regions, nullptr };
+/* management of memory for kernel, Sigma0, and Moe */
+static Region_list sysalloc;
+static Region __sysalloc[16];
+
+static Memory _mem_manager = { &ram, &sysalloc, &regions, nullptr };
 Memory *mem_manager = &_mem_manager;
 
 L4_kernel_options::Uart kuart;
@@ -389,18 +393,27 @@ parse_mem_layout(const char *s, unsigned long *size, unsigned long *offset)
 static void
 dump_ram_map(bool show_total = false)
 {
-  unsigned long long sum = 0;
-  char s[64];
+  unsigned long long sum_ram = 0;
   for (Region const &r : ram)
     {
+      char s[64];
       l4util_human_readable_size(s, sizeof(s), r.size());
       printf("  RAM: %016lx - %016lx: %s\n", r.begin(), r.end(), s);
-      sum += r.size();
+      sum_ram += r.size();
     }
+
+  unsigned long long sum_sysalloc = 0;
+  for (Region const &r : sysalloc)
+    sum_sysalloc += r.size();
+
   if (show_total)
     {
-      l4util_human_readable_size(s, sizeof(s), sum);
-      printf("  Total RAM: %s\n", s);
+      char s_ram[64];
+      l4util_human_readable_size(s_ram, sizeof(s_ram), sum_ram);
+      char s_sysalloc[64];
+      l4util_human_readable_size(s_sysalloc, sizeof(s_sysalloc), sum_sysalloc);
+      printf("  Total RAM: %s; available for Bootstrap/Sigma0/Kernel: %s\n",
+             s_ram, s_sysalloc);
     }
 }
 
@@ -423,8 +436,43 @@ setup_memory_map(char const *cmdline)
   if (!parsed_mem_option)
     // No -mem option given, use the one given by the platform
     Platform_base::platform->setup_memory_map();
+}
 
-  dump_ram_map(true);
+/**
+ * Fill 'sysalloc' region list.
+ *
+ * Add a sysalloc region for every '-sysalloc=' parameter which intersects with
+ * a RAM region. If no '-sysalloc=' parameter was passed, add a single sysalloc
+ * region that covers all RAM regions.
+ */
+static void
+setup_sysalloc_map(char const *cmdline)
+{
+  bool parsed_sysalloc_option = false;
+  const char *s = cmdline;
+
+  for (int arg_len = 0; (s = check_arg(s, "-sysalloc=", &arg_len));)
+    {
+      unsigned long size, offset = 0;
+      if (!parse_mem_layout(s, &size, &offset))
+        panic("Invalid '-sysalloc=%.*s' parameter", arg_len, s);
+
+      parsed_sysalloc_option = true;
+
+      Region r_sysalloc = Region::start_size(offset, size);
+      if (ram.find(r_sysalloc))
+        sysalloc.add(r_sysalloc);
+      else
+        printf("Region for '-sysalloc=%.*s' not part of RAM -- skipping\n",
+               arg_len, s);
+    }
+
+  if (!parsed_sysalloc_option)
+    sysalloc.add(Region(0UL, ~0UL));
+  else if (sysalloc.begin() == sysalloc.end())
+    panic("No intersection between -sysalloc regions and RAM regions");
+  else
+    sysalloc.optimize();
 }
 
 /**
@@ -773,12 +821,16 @@ startup(char const *cmdline)
 
   regions.init(__regs, "regions");
   ram.init(__ram, "RAM", get_memory_max_size(cmdline), get_memory_max_address());
+  sysalloc.init(__sysalloc, "sysalloc");
 
   setup_memory_map(cmdline);
 
   /* basically add the bootstrap binary to the allocated regions */
   init_regions();
   plat->init_regions();
+
+  setup_sysalloc_map(cmdline);
+  dump_ram_map(true);
 
   if (const char *s = check_arg(cmdline, "-modaddr"))
     {
@@ -928,6 +980,7 @@ startup(char const *cmdline)
   finalize_regions();
   regions.optimize();
   regions.dump();
+  sysalloc.dump();
 
   /* setup kernel PART THREE: memory descriptors to all KIPs after
    * finalizing regions */
@@ -980,14 +1033,15 @@ l4_exec_read_exec(void *opaque, ElfW(Phdr) const *ph,
 
   auto mem_addr = ph->p_paddr + offset;
 
-  if (Verbose_load)
-    printf("    [%p-%p]\n", (void *)mem_addr, (void *)(mem_addr + ph->p_memsz));
+  Region elf_region = Region::start_size(mem_addr, ph->p_memsz);
 
-  if (!ram.contains(Region::start_size(mem_addr, ph->p_memsz)))
+  if (Verbose_load)
+    printf("    [%lx-%lx]\n", elf_region.begin(), elf_region.end() + 1);
+
+  if (!sysalloc.contains(elf_region) || !ram.contains(elf_region))
     {
       printf("To be loaded binary region is out of memory region.\n");
-      printf(" Binary region: %lx - %lx\n", l4_addr_t{mem_addr},
-             l4_addr_t{mem_addr + ph->p_memsz});
+      printf(" Binary region: %lx - %lx\n", elf_region.begin(), elf_region.end() + 1);
       dump_ram_map();
       panic("Binary outside memory");
     }
@@ -1073,8 +1127,18 @@ l4_exec_add_region(void *opaque, ElfW(Phdr) const *ph,
       panic("Region overlap");
     }
 
-  regions.add(n, true);
-  return 0;
+  if (Region const *r = sysalloc.find(n))
+    if (r->contains(n))
+      {
+        regions.add(n, true);
+        return 0;
+      }
+
+  printf("  New region\n  ");
+  n.vprint(false);
+  printf("  not within sysalloc range.\n");
+  sysalloc.dump();
+  panic("Check -sysalloc= parameters!");
 }
 
 static int
@@ -1112,7 +1176,7 @@ l4_exec_gather_info(void *opaque, ElfW(Phdr) const *ph,
   info->align = cxx::max(info->align, l4_addr_t{ph->p_align});
 
   auto r = Region::start_size(ph->p_paddr, ph->p_memsz);
-  if (!ram.contains(r) || find_region_overlap(r))
+  if (!sysalloc.contains(r) || !ram.contains(r) || find_region_overlap(r))
     info->needs_relocation = true;
 
   return 0;

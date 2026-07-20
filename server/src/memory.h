@@ -21,6 +21,7 @@ class Region_list;
 struct Memory
 {
   Region_list *ram;
+  Region_list *sysalloc;
   Region_list *regions;
   unsigned long find_free_ram(unsigned long size, unsigned long min_addr = 0,
                               unsigned long max_addr = ~0UL,

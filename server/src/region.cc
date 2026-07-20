@@ -168,7 +168,25 @@ Region_list::find(Region const &o) const
     if (c->overlaps(o))
       return c;
 
-  return 0;
+  return nullptr;
+}
+
+Region *
+Region_list::find_rev(Region const &o) const
+{
+  if (empty())
+    return nullptr;
+
+  Region *c = _end;
+  do
+    {
+      --c;
+      if (c->overlaps(o))
+        return c;
+    }
+  while (c != _reg);
+
+  return nullptr;
 }
 
 Region *
@@ -178,7 +196,7 @@ Region_list::contains(Region const &o) const
     if (c->contains(o))
       return c;
 
-  return 0;
+  return nullptr;
 }
 
 void
