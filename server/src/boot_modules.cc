@@ -475,7 +475,7 @@ static inline void check_md5(const char *, void const *, unsigned, const char *)
 
 #ifdef CONFIG_BOOTSTRAP_COMPRESS
 static void
-decompress_mod(Mod_info *mod, l4_addr_t dest, Region::Type type = Region::Boot)
+decompress_mod(Mod_info *mod, l4_addr_t dest)
 {
   unsigned long dest_size = mod->size_uncompressed();
   if (!dest)
@@ -496,7 +496,11 @@ decompress_mod(Mod_info *mod, l4_addr_t dest, Region::Type type = Region::Boot)
 
   mod->start(reinterpret_cast<char const *>(dest));
   mod->size(mod->size_uncompressed());
-  mem_manager->regions->add(mod->region(true, type));
+  // Note: Here, the region sub_type is temporarily set to the module index,
+  //       even for modules of type Region::Root. But for those regions, the
+  //       sub_type is supposed to be any Region::Root_section_* type! This is
+  //       later fixed in Boot_modules::merge_mod_regions().
+  mem_manager->regions->add(mod->region(true, Region::Boot));
 }
 #endif // CONFIG_BOOTSTRAP_COMPRESS
 }
@@ -575,7 +579,7 @@ static void
 decomp_move_mod(Mod_info *mod, char *destbuf)
 {
   if (mod->compressed())
-    decompress_mod(mod, (l4_addr_t)destbuf, Region::Root);
+    decompress_mod(mod, reinterpret_cast<l4_addr_t>(destbuf));
   else
     {
       memmove(destbuf, mod->start(), mod->size_uncompressed());
