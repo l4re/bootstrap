@@ -89,10 +89,9 @@ get_printable(int c)
 }
 
 Region
-Boot_modules::mod_region(unsigned index, l4_addr_t start, l4_addr_t size,
-                         Region::Type type)
+Boot_modules::mod_region(unsigned index, l4_addr_t start, l4_addr_t size)
 {
-  return Region::start_size(start, size, Mod_info::Mod_reg, type,
+  return Region::start_size(start, size, Mod_info::Mod_reg, Region::Boot,
                             static_cast<Region::Subtype_info>(index));
 }
 

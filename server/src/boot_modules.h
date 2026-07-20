@@ -86,8 +86,7 @@ public:
   virtual int base_mod_idx(l4util_l4mod_mod_info_flag mod_info_mod_type,
                            unsigned node = 0) = 0;
   void move_modules(unsigned long modaddr);
-  Region mod_region(unsigned index, l4_addr_t start, l4_addr_t size,
-                    Region::Type type = Region::Boot);
+  Region mod_region(unsigned index, l4_addr_t start, l4_addr_t size);
   void merge_mod_regions();
 
 protected:
