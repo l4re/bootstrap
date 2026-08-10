@@ -358,6 +358,9 @@ public:
   /** Get the end() iterator. */
   Region *end() const { return _end; }
 
+  /** Return true if this list is empty. */
+  bool empty() const { return _reg == _end; }
+
   /** Remove the region given by the iterator r. */
   Region *remove(Region *r);
 
