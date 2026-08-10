@@ -4,6 +4,15 @@ $(if $(IS_GEN_DT_PLATFORM),\
   $(foreach a,$(PLATFORM_ARCH),\
     $(eval SUPPORT_CC_$(a)-$(PLATFORM_TYPE) := platform/arm_gen.cc dt.cc)))
 
+# For arm_gen, if building an EFI is requested, use arm_sbsa - This
+# basically makes "make efiimage PT=arm_gen" and "make efiimage PT=arm_sbsa"
+# the same thing.
+ifneq ($(BOOTSTRAP_DO_UEFI),)
+# Override possible setting from above
+SUPPORT_CC_arm-arm_gen         := acpi.cc platform/sbsa.cc dt.cc
+SUPPORT_CC_arm64-arm_gen       := acpi.cc platform/sbsa.cc dt.cc
+endif
+
 SUPPORT_CC_arm-sa1000          := platform/sa1000.cc platform_single_ram_region.cc
 SUPPORT_CC_arm-pxa             := platform/pxa.cc platform_single_ram_region.cc
 SUPPORT_CC_arm-integrator      := platform/integrator.cc platform_single_ram_region.cc
