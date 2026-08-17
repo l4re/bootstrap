@@ -202,12 +202,17 @@ Region_list::contains(Region const &o) const
 void
 Region::print(bool aligned) const
 {
-  char s[64];
-  l4util_human_readable_size(s, sizeof(s), size());
-  if (aligned)
-    printf("  [%9lx, %9lx] {%10s}", begin(), end(), s);
+  if (begin() == 0 && end() == ~0UL)
+    printf("%s[%9u, %9s]", aligned ? "  " : "", 0, "max");
   else
-    printf("[%lx, %lx] {%s}", begin(), end(), s);
+    {
+      char s[64];
+      l4util_human_readable_size(s, sizeof(s), size());
+      if (aligned)
+        printf("  [%9lx, %9lx] {%10s}", begin(), end(), s);
+      else
+        printf("[%lx, %lx] {%s}", begin(), end(), s);
+    }
 }
 
 void
