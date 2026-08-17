@@ -93,7 +93,7 @@ Efi::init(EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
 
   InitializeLib(image, systab);
 
-  Print(L"\n\rEFI: L4::Bootstrap\n\r");
+  Print(u"\n\rEFI: L4::Bootstrap\n\r");
 
   // Use EFI console until we've exited the boot services
   set_stdio_uart(&efi_console);
@@ -105,13 +105,13 @@ Efi::init(EFI_HANDLE image, EFI_SYSTEM_TABLE *systab)
     r = LibGetSystemConfigurationTable(&AcpiTableGuid, &_acpi_rsdp);
 
   if (r == EFI_SUCCESS)
-    Print(L"EFI: Found ACPI RSDP in EFI system table\n\r");
+    Print(u"EFI: Found ACPI RSDP in EFI system table\n\r");
   else
     _acpi_rsdp = nullptr;
 
   r = LibGetSystemConfigurationTable(&EfiDtbTableGuid, &_fdt);
   if (r == EFI_SUCCESS)
-    Print(L"EFI: Got DTB at %p\n\r", _fdt);
+    Print(u"EFI: Got DTB at %p\n\r", _fdt);
   else
     _fdt = nullptr;
 
@@ -189,7 +189,7 @@ Efi::setup_memory()
       EFI_MEMORY_DESCRIPTOR *m = (EFI_MEMORY_DESCRIPTOR *)d;
 
       if (0)
-        Print(L"MD%02d: type=%02x p=%llx v=%llx numpages=%llx attr=%llx\n\r",
+        Print(u"MD%02d: type=%02x p=%llx v=%llx numpages=%llx attr=%llx\n\r",
               (d - (char *)efi_mem_desc) / desc_size,
               m->Type, m->PhysicalStart,
               m->VirtualStart, m->NumberOfPages, m->Attribute);
@@ -373,31 +373,30 @@ void Efi::setup_gop()
   EFI_STATUS rc = LibLocateProtocol(&efi_gop, (void **)&gop);
   if (EFI_ERROR(rc))
     {
-      Print((CHAR16 *)L"No Graphics\n");
+      Print(u"No Graphics\n");
       return;
     }
 
   int i, imax;
-  void *r;
+  EFI_STATUS r;
 
   imax = gop->Mode->MaxMode;
 
   const bool verbose = false;
 
   if (verbose)
-    Print((CHAR16 *)L"GOP reports MaxMode %d\n", imax);
+    Print(u"GOP reports MaxMode %d\n", imax);
   for (i = 0; i < imax; i++)
     {
       EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *info;
       UINTN SizeOfInfo;
-      r = uefi_call_wrapper((void *)gop->QueryMode, 4, gop, i, &SizeOfInfo,
-                             &info);
+      r = uefi_call_wrapper(gop->QueryMode, 4, gop, i, &SizeOfInfo, &info);
       if (EFI_ERROR(r) && (EFI_STATUS)r == EFI_NOT_STARTED)
         {
-          r = uefi_call_wrapper((void *)gop->SetMode, 2, gop,
+          r = uefi_call_wrapper(gop->SetMode, 2, gop,
                                 gop->Mode->Mode);
           // TODO: check r
-          r = uefi_call_wrapper((void *)gop->QueryMode, 4, gop, i,
+          r = uefi_call_wrapper(gop->QueryMode, 4, gop, i,
                                 &SizeOfInfo, &info);
         }
 
@@ -405,39 +404,39 @@ void Efi::setup_gop()
         {
           CHAR16 Buffer[64];
           StatusToString(Buffer, (EFI_STATUS)r);
-          Print((CHAR16 *)L"EFI GOP: %d: Bad response from QueryMode: %s (%d)\n",
+          Print(u"EFI GOP: %d: Bad response from QueryMode: %s (%d)\n",
                 i, Buffer, r);
           continue;
         }
 
       if (verbose)
         {
-          Print((CHAR16 *)L"%c%d: %dx%d ",
+          Print(u"%c%d: %dx%d ",
                 (*gop->Mode->Info == *info) ? '*' : ' ', i,
                 info->HorizontalResolution, info->VerticalResolution);
           switch (info->PixelFormat)
             {
             case PixelRedGreenBlueReserved8BitPerColor:
-                Print((CHAR16 *)L"RGBR");
+                Print(u"RGBR");
               break;
             case PixelBlueGreenRedReserved8BitPerColor:
-                Print((CHAR16 *)L"BGRR");
+                Print(u"BGRR");
               break;
             case PixelBitMask:
-              Print((CHAR16 *)L"R:%08x G:%08x B:%08x X:%08x",
+              Print(u"R:%08x G:%08x B:%08x X:%08x",
                     info->PixelInformation.RedMask,
                     info->PixelInformation.GreenMask,
                     info->PixelInformation.BlueMask,
                     info->PixelInformation.ReservedMask);
               break;
             case PixelBltOnly:
-              Print((CHAR16 *)L"(blt only)");
+              Print(u"(blt only)");
               break;
             default:
-              Print((CHAR16 *)L"(Invalid pixel format)");
+              Print(u"(Invalid pixel format)");
               break;
             }
-          Print((CHAR16 *)L" pitch %d\n", info->PixelsPerScanLine);
+          Print(u" pitch %d\n", info->PixelsPerScanLine);
         }
 
       if (*info == *gop->Mode->Info)
@@ -447,7 +446,7 @@ void Efi::setup_gop()
           _video_fb_size      = gop->Mode->FrameBufferSize;
 
           if (verbose)
-            Print((CHAR16 *)L" base=%x  size=%x\n",
+            Print(u" base=%x  size=%x\n",
                   _video_fb_phys_base, _video_fb_size);
         }
     }
