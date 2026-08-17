@@ -15,6 +15,8 @@
 
 #include <l4/sys/kip.h>
 
+#include <stdio.h>
+
 class Platform_arm : public Platform_base
 {
 public:
