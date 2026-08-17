@@ -393,7 +393,7 @@ parse_mem_layout(const char *s, unsigned long *size, unsigned long *offset)
 static void
 dump_ram_map(bool show_total = false)
 {
-  unsigned long long sum_ram = 0;
+  unsigned long sum_ram = 0;
   for (Region const &r : ram)
     {
       char s[64];
@@ -402,7 +402,7 @@ dump_ram_map(bool show_total = false)
       sum_ram += r.size();
     }
 
-  unsigned long long sum_sysalloc = 0;
+  unsigned long sum_sysalloc = 0;
   for (Region const &r : sysalloc)
     sum_sysalloc += r.size();
 
@@ -556,10 +556,8 @@ static Region bootstrap_region()
 
   auto *p = Platform_base::platform;
 
-  unsigned long long pstart
-    = p->to_phys(reinterpret_cast<unsigned long>(&_start));
-  unsigned long long pend
-    = p->to_phys(reinterpret_cast<unsigned long>(&_end));
+  unsigned long pstart = p->to_phys(reinterpret_cast<unsigned long>(&_start));
+  unsigned long pend   = p->to_phys(reinterpret_cast<unsigned long>(&_end));
   return Region::start_size(pstart, pend - pstart, ".bootstrap", Region::Boot);
 }
 
