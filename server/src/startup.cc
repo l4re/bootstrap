@@ -337,19 +337,26 @@ parse_memvalue(const char *s, unsigned long *val, char **ep)
   return true;
 }
 
-/*
+/**
  * Parse a memory layout string: size@offset
- * E.g.: 256M@0x40000000, or 128M@128M
+ * E.g.: 256M@0x40000000, or 128M@128M.
+ *
+ * \param[out] s       The string to parse.
+ * \param[out] size    Size of the memory area.
+ * \param[out] offset  Offset of the memory area.
+ *
+ * \retval false  There was a parse error.
+ * \retval true   Size and offset successfully parsed.
  */
 static bool
-parse_mem_layout(const char *s, unsigned long *sz, unsigned long *offset)
+parse_mem_layout(const char *s, unsigned long *size, unsigned long *offset)
 {
   char *ep;
 
-  if (!parse_memvalue(s, sz, &ep))
+  if (!parse_memvalue(s, size, &ep))
     return false;
 
-  if (*sz == 0)
+  if (*size == 0)
     return false;
 
   if (*ep != '@')
