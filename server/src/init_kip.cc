@@ -53,8 +53,8 @@ init_kip_md(l4_kernel_info_t *l4i, Region_list *ram, Region_list *regions)
   for (Region const &r : *ram)
     {
       // Exclude any non 1K-aligned conventional memory.
-      unsigned long long begin = l4_round_size(r.begin(), 10);
-      unsigned long long end = l4_trunc_size(r.end() + 1, 10) - 1;
+      unsigned long begin = l4_round_size(r.begin(), 10);
+      unsigned long end = l4_trunc_size(r.end() + 1, 10) - 1;
       (md++)->set(begin, end, Mem_desc::Conventional);
     }
 
