@@ -26,16 +26,10 @@ typedef struct
 
 extern l4_uint64_t mem_end;
 
-//const char * get_cmdline(l4util_mb_info_t *mbi);
-
-#ifdef __cplusplus
 #include "koptions-def.h"
 char const *check_arg(char const *cmdline, const char *arg, int *arg_len = nullptr);
 extern L4_kernel_options::Uart kuart;
 extern unsigned int kuart_flags;
 extern "C" void startup(char const *cmdline);
-#else
-extern void startup(char const *cmdline);
-#endif
 
 #endif /* ! __STARTUP_H__ */
