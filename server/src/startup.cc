@@ -72,7 +72,7 @@ unsigned int kuart_flags;
  * Calculate the maximum memory limit in MiB.
  *
  * The limit is the highest physical address where conventional RAM is allowed.
- * The memory is limited to 3 GiB on IA32 and unlimited on other systems.
+ * The memory is limited to 3 GiB - 1 on IA32 and unlimited on other systems.
  */
 static constexpr
 unsigned long long
@@ -84,7 +84,7 @@ get_memory_max_address()
    * After that, the remaining pages are mapped using l4sigma0_map_anypage()
    * with a receive window of L4_WHOLE_ADDRESS_SPACE. In response Sigma0
    * could deliver pages beyond the 3GB user space limit. */
-  return 3024ULL << 20;
+  return (3024ULL << 20) - 1;
 #endif
 
   return ~0ULL;

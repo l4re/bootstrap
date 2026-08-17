@@ -129,7 +129,7 @@ Region_list::add(Region const &region, bool may_overlap)
       return;
     }
 
-  if (mem.end() >= _address_limit)
+  if (mem.end() > _address_limit)
     {
       printf("  Limiting '%s' region ", _name);
       mem.print();
