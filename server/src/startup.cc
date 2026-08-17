@@ -410,11 +410,11 @@ setup_memory_map(char const *cmdline)
   bool parsed_mem_option = false;
   const char *s = cmdline;
 
-  while ((s = check_arg(s, "-mem=")))
+  for (int arg_len = 0; (s = check_arg(s, "-mem=", &arg_len));)
     {
       unsigned long sz, offset = 0;
       if (!parse_mem_layout(s, &sz, &offset))
-        panic("Invalid '-mem=%s' parameter", s);
+        panic("Invalid '-mem=%.*s' parameter", arg_len, s);
 
       parsed_mem_option = true;
       ram.add(Region::start_size(offset, sz, ".ram"));
