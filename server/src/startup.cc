@@ -75,7 +75,7 @@ unsigned int kuart_flags;
  * The memory is limited to 3 GiB - 1 on IA32 and unlimited on other systems.
  */
 static constexpr
-unsigned long long
+unsigned long
 get_memory_max_address()
 {
 #if !defined(__LP64__) && defined(CONFIG_MMU)
@@ -84,10 +84,10 @@ get_memory_max_address()
    * After that, the remaining pages are mapped using l4sigma0_map_anypage()
    * with a receive window of L4_WHOLE_ADDRESS_SPACE. In response Sigma0
    * could deliver pages beyond the 3GB user space limit. */
-  return (3024ULL << 20) - 1;
+  return (3024UL << 20) - 1;
 #endif
 
-  return ~0ULL;
+  return ~0UL;
 }
 
 /**
@@ -326,14 +326,14 @@ check_arg(char const *cmdline, const char *arg, int *arg_len)
  * If available the '-maxmem=xx' command line option is used.
  */
 static
-unsigned long long
+unsigned long
 get_memory_max_size(char const *cmdline)
 {
   /* maxmem= parameter? */
   if (char const *c = check_arg(cmdline, "-maxmem="))
     return strtoul(c, NULL, 10) << 20;
 
-  return ~0ULL;
+  return ~0UL;
 }
 
 static bool
@@ -505,8 +505,8 @@ static void fill_mem(l4_uint8_t fill_value)
   for (Region const &ram_region : ram)
     {
       // <ram_region_begin, ram_region_end> is the working range.
-      unsigned long long ram_region_begin = ram_region.begin();
-      unsigned long long ram_region_end = ram_region.end();
+      unsigned long ram_region_begin = ram_region.begin();
+      unsigned long ram_region_end = ram_region.end();
 
       // The working range is completely outside of accessible memory.
       if (ram_region_begin > mem_end)
