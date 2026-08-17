@@ -30,7 +30,7 @@ extern l4_uint64_t mem_end;
 
 #ifdef __cplusplus
 #include "koptions-def.h"
-char const *check_arg(char const *cmdline, const char *arg);
+char const *check_arg(char const *cmdline, const char *arg, int *arg_len = nullptr);
 extern L4_kernel_options::Uart kuart;
 extern unsigned int kuart_flags;
 extern "C" void startup(char const *cmdline);

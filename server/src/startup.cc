@@ -290,18 +290,30 @@ L4_kernel_options::Options *find_kopts(Boot_modules::Module const &mod,
 /**
  * Scan the command line for the given argument.
  *
- * \param cmdline  Command line, may be nullptr.
- * \param arg      Argument to scan the command line for.
+ * \param      cmdline  Command line, may be nullptr.
+ * \param      arg      Argument to scan the command line for.
+ * \param[out] arg_len  Where to store the length of the found parameter.
+ *                      May be nullptr.
  *
  * \returns pointer after argument, nullptr if not found.
  */
 char const *
-check_arg(char const *cmdline, const char *arg)
+check_arg(char const *cmdline, const char *arg, int *arg_len)
 {
   if (char const *s = cmdline)
     while ((s = strstr(s, arg)))
       if (s == cmdline || isspace(s[-1]))
-        return s + strlen(arg);
+        {
+          s += strlen(arg);
+          if (arg_len)
+            {
+              int i = 0;
+              while (s[i] != '\0' && !isspace(s[i]))
+                ++i;
+              *arg_len = i;
+            }
+          return s;
+        }
 
   return nullptr;
 }
