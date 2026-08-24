@@ -365,7 +365,10 @@ class Platform_arm_rpi_mbox : public Platform_arm,
     if (br.memory_size_mb() == 8192)
       {
         mem_manager->ram->add(Region(second_start, 0x0fbffffff, ".ram"));
-        mem_manager->ram->add(Region(0x100000000, 0x1ffffffff, ".ram"));
+        if constexpr (sizeof(long) == 8)
+          mem_manager->ram->add(Region(0x100000000, 0x1ffffffff, ".ram"));
+        else
+          printf("  WARNING: RAM 0x1'00000000..0x1'ffffffff not addressable\n");
       }
     if (br.memory_size_mb() == 4096)
       mem_manager->ram->add(Region(second_start, 0xfbffffff, ".ram"));
