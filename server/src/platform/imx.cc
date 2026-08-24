@@ -175,7 +175,10 @@ class Platform_arm_imx
     mem_manager->ram->add(Region(0x080200000, 0x083ffffff, ".ram"));
     mem_manager->ram->add(Region(0x088000000, 0x08fffffff, ".ram"));
     mem_manager->ram->add(Region(0x095c00000, 0x0ffffffff, ".ram"));
-    mem_manager->ram->add(Region(0x880000000, 0x8bfffffff, ".ram"));
+    if constexpr (sizeof(long) == 8)
+      mem_manager->ram->add(Region(0x880000000, 0x8bfffffff, ".ram"));
+    else
+      printf("  WARNING: RAM at 0x880000000..0x8bfffffff not addressable\n");
   }
 
   Boot_modules *modules() { return this; }
