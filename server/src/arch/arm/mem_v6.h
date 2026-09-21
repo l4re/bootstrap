@@ -45,17 +45,20 @@ bool Cache::Data::enabled()
 void Cache::Data::disable()
 {
   unsigned long r;
+  Barrier::dsb_system();
   asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
-  r &= 1 << 2;
+  r &= ~(1UL << 2);
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
+  Barrier::isb();
 }
 
 void Cache::Insn::disable()
 {
   unsigned long r;
   asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
-  r &= 1 << 12;
+  r &= ~(1UL << 12);
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
+  Barrier::isb();
 }
 
 void Cache::Insn::inv()

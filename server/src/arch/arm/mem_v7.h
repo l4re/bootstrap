@@ -97,8 +97,9 @@ void Cache::Data::disable()
   unsigned long r;
   Barrier::dsb_system();
   asm volatile("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
-  r &= 1 << 2;
+  r &= ~(1UL << 2);
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
+  Barrier::isb();
 }
 
 void Cache::Insn::disable()
@@ -109,8 +110,8 @@ void Cache::Insn::disable()
   Barrier::isb();
   Barrier::dsb_cores();
   asm volatile("mcr p15, 0, %0, c7, c5, 0" : : "r" (0)); // ICIALLU
-  Barrier::isb();
   Barrier::dsb_cores();
+  Barrier::isb();
 }
 
 void Cache::Insn::inv()

@@ -103,7 +103,8 @@ bool Cache::Data::enabled()
 void Cache::Data::disable()
 {
   Barrier::dsb_system();
-  Arm::Internal::sctlr(Arm::Internal::sctlr() & ~(1 << 2));
+  Arm::Internal::sctlr(Arm::Internal::sctlr() & ~(1UL << 2));
+  Barrier::isb();
 }
 
 void Cache::Data::clean()
@@ -152,6 +153,7 @@ void Cache::Insn::disable()
   Barrier::isb();
   Barrier::dsb_cores();
   inv();
+  Barrier::isb();
 }
 
 void Cache::Insn::inv()
