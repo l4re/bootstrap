@@ -108,10 +108,7 @@ void Cache::Insn::disable()
   asm ("mrc p15, 0, %0, c1, c0, 0" : "=r" (r));
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r & ~(1UL << 12)));
   Barrier::isb();
-  Barrier::dsb_cores();
-  asm volatile("mcr p15, 0, %0, c7, c5, 0" : : "r" (0)); // ICIALLU
-  Barrier::dsb_cores();
-  Barrier::isb();
+  inv();
 }
 
 void Cache::Insn::inv()

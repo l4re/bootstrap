@@ -59,6 +59,7 @@ void Cache::Insn::disable()
   r &= ~(1UL << 12);
   asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r" (r) : "memory");
   Barrier::isb();
+  inv();
 }
 
 void Cache::Insn::inv()

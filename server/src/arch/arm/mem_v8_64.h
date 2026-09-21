@@ -151,9 +151,7 @@ void Cache::Insn::disable()
   asm ("mrs %0, SCTLR_EL2" : "=r"(sctlr) : : "memory");
   asm ("msr SCTLR_EL2, %0" : : "r"(sctlr & ~(1UL << 12)) : "memory");
   Barrier::isb();
-  Barrier::dsb_cores();
   inv();
-  Barrier::isb();
 }
 
 void Cache::Insn::inv()
