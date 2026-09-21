@@ -147,9 +147,7 @@ void Cache::Data::flush(unsigned long addr)
 
 void Cache::Insn::disable()
 {
-  unsigned long sctlr;
-  asm ("mrs %0, SCTLR_EL2" : "=r"(sctlr) : : "memory");
-  asm ("msr SCTLR_EL2, %0" : : "r"(sctlr & ~(1UL << 12)) : "memory");
+  Arm::Internal::sctlr(Arm::Internal::sctlr() & ~(1UL << 12));
   Barrier::isb();
   inv();
 }
