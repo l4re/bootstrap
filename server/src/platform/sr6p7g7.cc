@@ -57,7 +57,7 @@ class Platform_sr6p7g7 : public Platform_arm, public Boot_modules_image_mode
     for (auto const &r : cluster_regions)
       {
         Region cluster_region(r.begin, r.end);
-        if (r.cluster == cluster && search_area->contains(cluster_region))
+        if (r.cluster == cluster && search_area->overlaps(cluster_region))
           {
             *search_area = search_area->intersect(cluster_region);
             return true;
