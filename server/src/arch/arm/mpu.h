@@ -102,18 +102,28 @@ struct Mpu
   {
     unsigned long hsctlr;
 
-    asm("mrc p15, 4, %0, c1, c0, 0" : "=r"(hsctlr));
+    asm volatile("mrc p15, 4, %0, c1, c0, 0" : "=r"(hsctlr));
     hsctlr |= 1U;
-    asm volatile("mcr p15, 4, %0, c1, c0, 0" : : "r"(hsctlr));
+    asm volatile(
+      "dsb sy                     \n"
+      "isb                        \n"
+      "mcr p15, 4, %0, c1, c0, 0  \n"
+      "isb                        \n"
+      : : "r"(hsctlr) : "memory");
   }
 
   static void disable()
   {
     unsigned long hsctlr;
 
-    asm("mrc p15, 4, %0, c1, c0, 0" : "=r"(hsctlr));
+    asm volatile("mrc p15, 4, %0, c1, c0, 0" : "=r"(hsctlr));
     hsctlr &= ~1UL;
-    asm volatile("mcr p15, 4, %0, c1, c0, 0" : : "r"(hsctlr));
+    asm volatile(
+      "dsb sy                     \n"
+      "isb                        \n"
+      "mcr p15, 4, %0, c1, c0, 0  \n"
+      "isb                        \n"
+      : : "r"(hsctlr) : "memory");
   }
 };
 
