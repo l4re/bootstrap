@@ -4,27 +4,27 @@
 
 void Barrier::dsb_system()
 {
-  asm volatile("dsb sy");
+  asm volatile("dsb sy" : : : "memory");
 }
 
 void Barrier::dsb_cores()
 {
-  asm volatile("dsb ish");
+  asm volatile("dsb ish" : : : "memory");
 }
 
 void Barrier::dmb_system()
 {
-  asm volatile("dmb sy");
+  asm volatile("dmb sy" : : : "memory");
 }
 
 void Barrier::dmb_cores()
 {
-  asm volatile("dmb ish");
+  asm volatile("dmb ish" : : : "memory");
 }
 
 void Barrier::isb()
 {
-  asm volatile("isb");
+  asm volatile("isb" : : : "memory");
 }
 
 class Arm_v7plus

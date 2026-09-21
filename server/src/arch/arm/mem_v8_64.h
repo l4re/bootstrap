@@ -78,14 +78,14 @@ public:
       {
 #if __ARM_ARCH_PROFILE != 82
       case 3:
-        asm volatile ("msr SCTLR_EL3, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL3, %0" : : "r"(sctlr) : "memory");
         break;
 #endif
       case 2:
-        asm volatile ("msr SCTLR_EL2, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL2, %0" : : "r"(sctlr) : "memory");
         break;
       case 1:
-        asm volatile ("msr SCTLR_EL1, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL1, %0" : : "r"(sctlr) : "memory");
         break;
       default:
         break;

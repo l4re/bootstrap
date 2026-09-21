@@ -70,9 +70,9 @@ public:
   static void sctlr(unsigned long sctlr)
   {
     if (hyp_mode())
-      asm volatile("mcr p15, 4, %0, c1, c0, 0" : : "r"(sctlr)); // HSCTLR
+      asm volatile("mcr p15, 4, %0, c1, c0, 0" : : "r"(sctlr) : "memory"); // HSCTLR
     else
-      asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r"(sctlr)); // SCTLR
+      asm volatile("mcr p15, 0, %0, c1, c0, 0" : : "r"(sctlr) : "memory"); // SCTLR
   }
 };
 
