@@ -52,14 +52,14 @@ public:
       {
 #if __ARM_ARCH_PROFILE != 82
       case 3:
-        asm ("mrs %0, SCTLR_EL3" : "=r"(sctlr));
+        asm volatile ("mrs %0, SCTLR_EL3" : "=r"(sctlr));
         break;
 #endif
       case 2:
-        asm ("mrs %0, SCTLR_EL2" : "=r"(sctlr));
+        asm volatile ("mrs %0, SCTLR_EL2" : "=r"(sctlr));
         break;
       case 1:
-        asm ("mrs %0, SCTLR_EL1" : "=r"(sctlr));
+        asm volatile ("mrs %0, SCTLR_EL1" : "=r"(sctlr));
         break;
       default:
         sctlr = 0;
@@ -73,14 +73,14 @@ public:
       {
 #if __ARM_ARCH_PROFILE != 82
       case 3:
-        asm ("msr SCTLR_EL3, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL3, %0" : : "r"(sctlr));
         break;
 #endif
       case 2:
-        asm ("msr SCTLR_EL2, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL2, %0" : : "r"(sctlr));
         break;
       case 1:
-        asm ("msr SCTLR_EL1, %0" : : "r"(sctlr));
+        asm volatile ("msr SCTLR_EL1, %0" : : "r"(sctlr));
         break;
       default:
         break;
