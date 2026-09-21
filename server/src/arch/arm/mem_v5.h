@@ -4,8 +4,7 @@ void Cache::Data::clean()
 {
   asm volatile("1:  mrc p15, 0, r15, c7, c10, 3 \n" // test and clean data cache
                "    bne 1b\n"
-               "    mcr p15, 0, %0, c7, c10, 4  \n" // CP15DSB / drain WB
-               : : "r" (0) : "memory", "cc");
+               : : : "memory", "cc");
   Barrier::dsb_system();
 }
 

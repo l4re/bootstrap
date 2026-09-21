@@ -125,7 +125,6 @@ void Cache::Data::clean()
                                 Arm::Internal::get_clidr,
                                 Arm::Internal::get_ccsidr,
                                 Arm_v7plus::set_way_dcache_noinfo_op());
-  Barrier::dsb_system();
 }
 
 void Cache::Data::clean(unsigned long addr)
@@ -151,7 +150,6 @@ void Cache::Data::inv()
                                 Arm::Internal::get_clidr,
                                 Arm::Internal::get_ccsidr,
                                 Arm_v7plus::set_way_dcache_noinfo_op());
-  Barrier::dsb_system();
 }
 
 void Cache::Data::inv(unsigned long addr)
@@ -166,7 +164,6 @@ void Cache::Data::flush()
                                 Arm::Internal::get_clidr,
                                 Arm::Internal::get_ccsidr,
                                 Arm_v7plus::set_way_dcache_noinfo_op());
-  Barrier::dsb_system();
 }
 
 void Cache::Data::flush(unsigned long addr)

@@ -76,7 +76,7 @@ public:
         while (set--);
       }
 
-    Barrier::dsb_cores();
+    Barrier::dsb_system();
     Barrier::isb();
   }
 };
