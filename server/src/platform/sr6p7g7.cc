@@ -120,8 +120,10 @@ class Platform_sr6p7g7 : public Platform_arm, public Boot_modules_image_mode
 
   void boot_kernel(unsigned long entry) override
   {
-    Cache::Data::flush();
+    // Disable the data cache first so that no new lines can be allocated
+    // after it has been flushed.
     Cache::Data::disable();
+    Cache::Data::flush();
     Cache::Insn::disable();
 
     Platform_base::boot_kernel(entry);
