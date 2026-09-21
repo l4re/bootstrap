@@ -95,9 +95,9 @@ void Cache::Data::clean(unsigned long addr)
 
 void Cache::Data::clean(unsigned long start, unsigned long size)
 {
-  unsigned cl_size = Arm::Internal::linesize_bytes();
+  unsigned long cl_size = Arm::Internal::linesize_bytes();
   unsigned long m = start & ~(cl_size - 1);
-  unsigned long e = (start + size + cl_size - 1) & (cl_size - 1);
+  unsigned long e = (start + size + cl_size - 1) & ~(cl_size - 1);
   asm volatile("" : : : "memory");
   for (; m != e; m += cl_size)
     asm volatile("mcr p15, 0, %0, c7, c10, 1" : : "r" (m));
